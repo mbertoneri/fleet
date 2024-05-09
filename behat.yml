@@ -1,0 +1,7 @@
+default:
+  suites:
+    register_vehicle:
+      paths:
+        - "%paths.base%/tests/Integration/RegisterVehicle"
+      contexts:
+        - Fulll\Tests\Integration\RegisterVehicle\RegisterVehicleContext
