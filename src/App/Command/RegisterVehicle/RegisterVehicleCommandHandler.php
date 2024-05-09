@@ -29,7 +29,7 @@ final readonly class RegisterVehicleCommandHandler implements CommandHandlerInte
 
         /** @var VehicleRepositoryInterface $vehicleRepository */
         $vehicleRepository = $this->serviceCollection->get(VehicleRepositoryInterface::class);
-        $vehicle = $vehicleRepository->findByRegistrationPlate($command->vehicleRegistrationNumber);
+        $vehicle = $vehicleRepository->findByRegistrationPlate($command->vehiclePlateNumber);
 
 
         if ($fleet->isVehicleRegistered($vehicle)){

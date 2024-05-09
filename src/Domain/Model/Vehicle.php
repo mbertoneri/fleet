@@ -9,6 +9,7 @@ class Vehicle
     private function __construct(
         private readonly string          $plateNumber,
         private readonly VehicleTypeEnum $type,
+        private ?Location $location = null,
     ){
     }
 
@@ -41,5 +42,17 @@ class Vehicle
     {
         return $this->type;
     }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location=$location;
+        return $this;
+    }
+
 
 }

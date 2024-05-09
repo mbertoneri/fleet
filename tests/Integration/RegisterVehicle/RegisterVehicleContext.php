@@ -16,7 +16,7 @@ use Fulll\Infra\Service\ServiceCollection;
 final class RegisterVehicleContext implements Context
 {
     private ?Fleet $fleet = null;
-    private ?Vehicle $vehicleOne = null;
+    private ?Vehicle $vehicle = null;
     private ?Fleet $anotherFleet = null;
     private bool $registrationTwiceFailed = false;
     private ServiceCollection $services;
@@ -45,9 +45,9 @@ final class RegisterVehicleContext implements Context
     public function aVehicle(): void
     {
         $commandBus = $this->services->getCommandBus();
-        $createVehicleCommand = new CreateVehicleCommand('vehicleOne');
-        $this->vehicleOne = $commandBus->execute($createVehicleCommand);
-        if (null === $this->vehicleOne) {
+        $createVehicleCommand = new CreateVehicleCommand(registrationNumber: 'vehicleOne');
+        $this->vehicle = $commandBus->execute($createVehicleCommand);
+        if (null === $this->vehicle) {
             throw new \RuntimeException('Fleet was not created');
         }
     }
@@ -58,7 +58,7 @@ final class RegisterVehicleContext implements Context
     public function iRegisterThisVehicleIntoMyFleet(): void
     {
         $commandBus = $this->services->getCommandBus();
-        $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicleOne->getPlateNumber());
+        $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicle->getPlateNumber());
         $commandBus->execute($registerCommand);
     }
 
@@ -67,7 +67,7 @@ final class RegisterVehicleContext implements Context
      */
     public function thisVehicleShouldBePartOfMyVehicleFleet(): void
     {
-        if (!$this->fleet->isVehicleRegistered($this->vehicleOne)) {
+        if (!$this->fleet->isVehicleRegistered($this->vehicle)) {
             throw new \RuntimeException('Vehicle was not registered');
         }
     }
@@ -78,7 +78,7 @@ final class RegisterVehicleContext implements Context
     public function iHaveRegisteredThisVehicleIntoMyFleet(): void
     {
         $commandBus = $this->services->getCommandBus();
-        $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicleOne->getPlateNumber());
+        $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicle->getPlateNumber());
         $commandBus->execute($registerCommand);
     }
 
@@ -89,7 +89,7 @@ final class RegisterVehicleContext implements Context
     {
         try {
             $commandBus = $this->services->getCommandBus();
-            $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicleOne->getPlateNumber());
+            $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicle->getPlateNumber());
             $commandBus->execute($registerCommand);
         } catch (VehicleAlreadyRegisteredException $exception) {
             $this->registrationTwiceFailed = true;
@@ -126,9 +126,9 @@ final class RegisterVehicleContext implements Context
     public function thisVehicleHasBeenRegisteredIntoTheOtherUsersFleet() : void
     {
         $commandBus = $this->services->getCommandBus();
-        $registerCommand = new RegisterVehicleCommand($this->anotherFleet->getId(), $this->vehicleOne->getPlateNumber());
+        $registerCommand = new RegisterVehicleCommand($this->anotherFleet->getId(), $this->vehicle->getPlateNumber());
         $commandBus->execute($registerCommand);
-        if (!$this->anotherFleet->isVehicleRegistered($this->vehicleOne)){
+        if (!$this->anotherFleet->isVehicleRegistered($this->vehicle)){
             throw new \RuntimeException('Vehicle should be registered in another fleet');
         }
     }

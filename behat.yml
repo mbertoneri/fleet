@@ -5,3 +5,8 @@ default:
         - "%paths.base%/tests/Integration/RegisterVehicle"
       contexts:
         - Fulll\Tests\Integration\RegisterVehicle\RegisterVehicleContext
+    park_vehicle:
+      paths:
+        - "%paths.base%/tests/Integration/ParkVehicle"
+      contexts:
+        - Fulll\Tests\Integration\ParkVehicle\ParkVehicleContext

@@ -8,6 +8,7 @@ use Fulll\App\Shared\Command\CommandInterface;
 use Fulll\App\Shared\Service\ServiceCollectionInterface;
 use Fulll\Domain\Domain\VehicleRepositoryInterface;
 use Fulll\Domain\Enum\VehicleTypeEnum;
+use Fulll\Domain\Model\Location;
 use Fulll\Domain\Model\Vehicle;
 
 final readonly class CreateVehicleCommandHandler implements CommandHandlerInterface

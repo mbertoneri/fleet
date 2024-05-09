@@ -4,6 +4,7 @@ namespace Fulll\Infra\Service;
 
 use Fulll\App\Command\CreateFleet\CreateFleetCommandHandler;
 use Fulll\App\Command\CreateVehicle\CreateVehicleCommandHandler;
+use Fulll\App\Command\ParkVehicle\ParkVehicleCommandHandler;
 use Fulll\App\Command\RegisterVehicle\RegisterVehicleCommandHandler;
 use Fulll\App\Shared\Command\CommandBusInterface;
 use Fulll\App\Shared\Query\QueryBusInterface;
@@ -40,6 +41,7 @@ final class ServiceCollection implements ServiceCollectionInterface
         $services->set(RegisterVehicleCommandHandler::class,new RegisterVehicleCommandHandler($services));
         $services->set(CreateFleetCommandHandler::class,new CreateFleetCommandHandler($services));
         $services->set(CreateVehicleCommandHandler::class,new CreateVehicleCommandHandler($services));
+        $services->set(ParkVehicleCommandHandler::class,new ParkVehicleCommandHandler($services));
 
         return $services;
 
