@@ -7,30 +7,62 @@ use Fulll\Domain\Enum\VehicleTypeEnum;
 class Vehicle
 {
     private function __construct(
+        private readonly string          $id,
         private readonly string          $plateNumber,
         private readonly VehicleTypeEnum $type,
-        private ?Location $location = null,
-    ){
+        private ?Location                $location = null,
+    )
+    {
     }
 
-    public static function createCar(string $registrationNumber): static
+    public static function create(string $plateNumber, VehicleTypeEnum $type, ?string $id = null): static
     {
-        return new self(plateNumber: $registrationNumber, type: VehicleTypeEnum::CAR);
+        $ensureId = $id ?? uniqid('veh_', true);
+
+        return match (true) {
+            VehicleTypeEnum::CAR === $type => Vehicle::createCar(registrationNumber: $plateNumber, id: $ensureId),
+            VehicleTypeEnum::MOTORCYCLE === $type => Vehicle::createMotorcycle(registrationNumber: $plateNumber, id: $ensureId),
+            VehicleTypeEnum::TRUCK === $type => Vehicle::createTruck(registrationNumber: $plateNumber, id: $ensureId),
+            VehicleTypeEnum::OTHER === $type => Vehicle::createUnknown(registrationNumber: $plateNumber, id: $ensureId),
+        };
+
     }
 
-    public static function createMotorcycle(string $registrationNumber): static
+    public static function createCar(string $registrationNumber, ?string $id = null): static
     {
-        return new self(plateNumber: $registrationNumber, type: VehicleTypeEnum::MOTORCYCLE);
+        return new self(
+            id: $id ?? uniqid('veh_', true),
+            plateNumber: $registrationNumber,
+            type: VehicleTypeEnum::CAR);
     }
 
-    public static function createTruck(string $registrationNumber): static
+    public static function createMotorcycle(string $registrationNumber, ?string $id = null): static
     {
-        return new self(plateNumber: $registrationNumber, type: VehicleTypeEnum::TRUCK);
+        return new self(
+            id: $id ?? uniqid('veh_', true),
+            plateNumber: $registrationNumber,
+            type: VehicleTypeEnum::MOTORCYCLE);
     }
 
-    public static function createUnknown(string $registrationNumber): static
+    public static function createTruck(string $registrationNumber, ?string $id = null): static
     {
-        return new self(plateNumber: $registrationNumber, type: VehicleTypeEnum::OTHER);
+        return new self(
+            id: $id ?? uniqid('veh_', true),
+            plateNumber: $registrationNumber,
+            type: VehicleTypeEnum::TRUCK);
+    }
+
+    public static function createUnknown(string $registrationNumber, ?string $id = null): static
+    {
+        return new self(
+            id: $id ?? uniqid('veh_', true),
+            plateNumber: $registrationNumber,
+            type: VehicleTypeEnum::OTHER);
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     public function getPlateNumber(): string
@@ -50,7 +82,7 @@ class Vehicle
 
     public function setLocation(?Location $location): static
     {
-        $this->location=$location;
+        $this->location = $location;
         return $this;
     }
 

@@ -5,16 +5,22 @@ declare(strict_types=1);
 namespace Fulll\Tests\Integration\RegisterVehicle;
 
 use Behat\Behat\Context\Context;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Fulll\App\Command\CreateFleet\CreateFleetCommand;
 use Fulll\App\Command\CreateVehicle\CreateVehicleCommand;
 use Fulll\App\Command\RegisterVehicle\RegisterVehicleCommand;
+use Fulll\Domain\Domain\FleetRepositoryInterface;
 use Fulll\Domain\Exception\VehicleAlreadyRegisteredException;
 use Fulll\Domain\Model\Fleet;
 use Fulll\Domain\Model\Vehicle;
 use Fulll\Infra\Service\ServiceCollection;
+use Fulll\Tests\Integration\ResetTrait;
 
 final class RegisterVehicleContext implements Context
 {
+
+    use ResetTrait;
+
     private ?Fleet $fleet = null;
     private ?Vehicle $vehicle = null;
     private ?Fleet $anotherFleet = null;
@@ -24,6 +30,12 @@ final class RegisterVehicleContext implements Context
     public function __construct()
     {
         $this->services = ServiceCollection::create();
+    }
+
+    /** @BeforeScenario */
+    public function before(BeforeScenarioScope $scope): void
+    {
+        $this->reset($this->services->getSqlManager());
     }
 
     /**
@@ -58,7 +70,7 @@ final class RegisterVehicleContext implements Context
     public function iRegisterThisVehicleIntoMyFleet(): void
     {
         $commandBus = $this->services->getCommandBus();
-        $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicle->getPlateNumber());
+        $registerCommand = new RegisterVehicleCommand($this->fleet->getUserId(), $this->vehicle->getPlateNumber());
         $commandBus->execute($registerCommand);
     }
 
@@ -67,9 +79,14 @@ final class RegisterVehicleContext implements Context
      */
     public function thisVehicleShouldBePartOfMyVehicleFleet(): void
     {
+        /** @var FleetRepositoryInterface $fleetRepository */
+        $fleetRepository = $this->services->get(FleetRepositoryInterface::class);
+        $this->fleet = $fleetRepository->findByUserId('fleetOne');
+
         if (!$this->fleet->isVehicleRegistered($this->vehicle)) {
             throw new \RuntimeException('Vehicle was not registered');
         }
+
     }
 
     /**
@@ -78,7 +95,7 @@ final class RegisterVehicleContext implements Context
     public function iHaveRegisteredThisVehicleIntoMyFleet(): void
     {
         $commandBus = $this->services->getCommandBus();
-        $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicle->getPlateNumber());
+        $registerCommand = new RegisterVehicleCommand($this->fleet->getUserId(), $this->vehicle->getPlateNumber());
         $commandBus->execute($registerCommand);
     }
 
@@ -89,7 +106,7 @@ final class RegisterVehicleContext implements Context
     {
         try {
             $commandBus = $this->services->getCommandBus();
-            $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicle->getPlateNumber());
+            $registerCommand = new RegisterVehicleCommand($this->fleet->getUserId(), $this->vehicle->getPlateNumber());
             $commandBus->execute($registerCommand);
         } catch (VehicleAlreadyRegisteredException $exception) {
             $this->registrationTwiceFailed = true;
@@ -126,8 +143,13 @@ final class RegisterVehicleContext implements Context
     public function thisVehicleHasBeenRegisteredIntoTheOtherUsersFleet() : void
     {
         $commandBus = $this->services->getCommandBus();
-        $registerCommand = new RegisterVehicleCommand($this->anotherFleet->getId(), $this->vehicle->getPlateNumber());
+        $registerCommand = new RegisterVehicleCommand($this->anotherFleet->getUserId(), $this->vehicle->getPlateNumber());
         $commandBus->execute($registerCommand);
+
+        /** @var FleetRepositoryInterface $fleetRepository */
+        $fleetRepository = $this->services->get(FleetRepositoryInterface::class);
+        $this->anotherFleet = $fleetRepository->findByUserId('fleetTwo');
+
         if (!$this->anotherFleet->isVehicleRegistered($this->vehicle)){
             throw new \RuntimeException('Vehicle should be registered in another fleet');
         }

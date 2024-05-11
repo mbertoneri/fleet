@@ -4,7 +4,7 @@ namespace Fulll\Domain\Model;
 
 final class Fleet
 {
-    /** @var array Vehicle */
+    /** @var array string  */
     private array $vehicles;
 
     private function __construct(
@@ -15,10 +15,10 @@ final class Fleet
         $this->vehicles = [];
     }
 
-    public static function create(string $userId) : static
+    public static function create(string $userId, ?string $id=null) : static
     {
         return new self(
-            id: uniqid('fleet_id',true),
+            id: $id ?? uniqid('fleet_id',true),
             userId: $userId
         );
     }
@@ -54,7 +54,5 @@ final class Fleet
     {
         return $this->userId;
     }
-
-
 
 }

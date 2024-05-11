@@ -31,12 +31,7 @@ final readonly class CreateVehicleCommandHandler implements CommandHandlerInterf
             throw new ServiceNotFoundException('Vehicle repository not found');
         }
 
-        $vehicle = match (true) {
-            VehicleTypeEnum::CAR === $command->vehicleType => Vehicle::createCar($command->registrationNumber),
-            VehicleTypeEnum::MOTORCYCLE === $command->vehicleType => Vehicle::createMotorcycle($command->registrationNumber),
-            VehicleTypeEnum::TRUCK === $command->vehicleType => Vehicle::createTruck($command->registrationNumber),
-            VehicleTypeEnum::OTHER === $command->vehicleType => Vehicle::createUnknown($command->registrationNumber),
-        };
+        $vehicle = Vehicle::create($command->registrationNumber,$command->vehicleType);
 
         $vehicleRepository->save($vehicle);
         return $vehicle;

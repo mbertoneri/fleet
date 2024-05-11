@@ -6,6 +6,8 @@ use Fulll\App\Command\CreateFleet\CreateFleetCommandHandler;
 use Fulll\App\Command\CreateVehicle\CreateVehicleCommandHandler;
 use Fulll\App\Command\ParkVehicle\ParkVehicleCommandHandler;
 use Fulll\App\Command\RegisterVehicle\RegisterVehicleCommandHandler;
+use Fulll\App\Query\FindFleet\FindFleetQueryHandler;
+use Fulll\App\Query\FindVehicle\FindVehicleQueryHandler;
 use Fulll\App\Shared\Command\CommandBusInterface;
 use Fulll\App\Shared\Query\QueryBusInterface;
 use Fulll\App\Shared\Service\ServiceCollectionInterface;
@@ -37,8 +39,8 @@ final class ServiceCollection implements ServiceCollectionInterface
         $services->set(SqlManagerInterface::class, $manager);
 
         //register repositories
-        $services->set(FleetRepositoryInterface::class, new FleetRepository($manager));
-        $services->set(VehicleRepositoryInterface::class, new VehicleRepository($manager));
+        $services->set(FleetRepositoryInterface::class, new FleetRepository($services));
+        $services->set(VehicleRepositoryInterface::class, new VehicleRepository($services));
 
         //register bus
         $services->set(CommandBusInterface::class,new CommandBus($services));
@@ -49,6 +51,10 @@ final class ServiceCollection implements ServiceCollectionInterface
         $services->set(CreateFleetCommandHandler::class,new CreateFleetCommandHandler($services));
         $services->set(CreateVehicleCommandHandler::class,new CreateVehicleCommandHandler($services));
         $services->set(ParkVehicleCommandHandler::class,new ParkVehicleCommandHandler($services));
+
+        //register queries
+        $services->set(FindFleetQueryHandler::class, new FindFleetQueryHandler($services));
+        $services->set(FindVehicleQueryHandler::class, new FindVehicleQueryHandler($services));
 
         return $services;
 

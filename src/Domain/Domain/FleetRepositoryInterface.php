@@ -8,5 +8,5 @@ interface FleetRepositoryInterface
 {
     public function save(Fleet $fleet);
     public function count() : int;
-    public function findById(string $id): Fleet;
+    public function findByUserId(string $userId): ?Fleet;
 }

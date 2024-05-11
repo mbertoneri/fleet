@@ -8,5 +8,7 @@ interface SqlManagerInterface
 
     public function insertStmt(string $sql, array $params = []): void;
 
+    public function executeStmt(string $sql, array $params = []): void;
+
     public function fetchStmt(string $sql, array $params = []): array;
 }

@@ -62,7 +62,7 @@ final class ParkVehicleContext implements Context
         $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicle->getPlateNumber());
         $commandBus->execute($registerCommand);
 
-        if (!$this->fleet->isVehicleRegistered($this->vehicle)) {
+        if (!$this->fleet->isVehicleRegistered($this->vehicle->getPlateNumber())) {
             throw new \RuntimeException('Vehicle was not registered');
         }
     }
