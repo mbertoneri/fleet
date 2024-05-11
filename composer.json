@@ -2,7 +2,8 @@
     "type": "mbertoneri-hiring",
     "license": "proprietary",
     "require": {
-        "php": "^8.3"
+        "php": "^8.3",
+        "symfony/console": "^7.0"
     },
     "require-dev": {
         "behat/behat": "*"

@@ -15,6 +15,8 @@ use Fulll\Infra\Repository\FleetRepository;
 use Fulll\Infra\Repository\VehicleRepository;
 use Fulll\Infra\Shared\CommandBus;
 use Fulll\Infra\Shared\QueryBus;
+use Fulll\Infra\Sql\SqliteManager;
+use Fulll\Infra\Sql\SqlManagerInterface;
 
 final class ServiceCollection implements ServiceCollectionInterface
 {
@@ -29,9 +31,14 @@ final class ServiceCollection implements ServiceCollectionInterface
     {
         $services = new self([]);
 
+        //sql
+        $manager = new SqliteManager();
+        $manager->connect(dsn: SqliteManager::DSN);
+        $services->set(SqlManagerInterface::class, $manager);
+
         //register repositories
-        $services->set(FleetRepositoryInterface::class, new FleetRepository());
-        $services->set(VehicleRepositoryInterface::class, new VehicleRepository());
+        $services->set(FleetRepositoryInterface::class, new FleetRepository($manager));
+        $services->set(VehicleRepositoryInterface::class, new VehicleRepository($manager));
 
         //register bus
         $services->set(CommandBusInterface::class,new CommandBus($services));
@@ -66,5 +73,10 @@ final class ServiceCollection implements ServiceCollectionInterface
     public function getQueryBus(): QueryBusInterface
     {
         return $this->services[QueryBusInterface::class];
+    }
+
+    public function getSqlManager(): SqlManagerInterface
+    {
+        return $this->services[SqlManagerInterface::class];
     }
 }

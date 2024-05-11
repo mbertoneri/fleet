@@ -4,6 +4,7 @@ namespace Fulll\App\Shared\Service;
 
 use Fulll\App\Shared\Command\CommandBusInterface;
 use Fulll\App\Shared\Query\QueryBusInterface;
+use Fulll\Infra\Sql\SqlManagerInterface;
 
 interface ServiceCollectionInterface
 {
@@ -12,5 +13,6 @@ interface ServiceCollectionInterface
 
     public function getCommandBus(): CommandBusInterface;
     public function getQueryBus(): QueryBusInterface;
+    public function getSqlManager(): SqlManagerInterface;
 
 }

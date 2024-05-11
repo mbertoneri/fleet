@@ -50,4 +50,11 @@ final class Fleet
         return $this->id;
     }
 
+    public function getUserId(): string
+    {
+        return $this->userId;
+    }
+
+
+
 }

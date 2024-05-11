@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Create the Application
+$application = new Symfony\Component\Console\Application;
+
+$application->add(new Fulll\Infra\Command\FleetClient());
+
+// Run it
+$application->run();
+
