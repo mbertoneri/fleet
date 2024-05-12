@@ -112,7 +112,7 @@ final class ParkVehicleContext implements Context
     {
         /** @var VehicleRepository $vehicleRepository */
         $vehicleRepository = $this->services->get(VehicleRepositoryInterface::class);
-        $this->vehicle=$vehicleRepository->findByRegistrationPlate('vehicleOne');
+        $this->vehicle = $vehicleRepository->findByRegistrationPlate('vehicleOne');
 
         if ($this->vehicle->getLocation()?->getLongitude() !== $this->location->getLongitude() ||
             $this->vehicle->getLocation()?->getLatitude() !== $this->location->getLatitude()

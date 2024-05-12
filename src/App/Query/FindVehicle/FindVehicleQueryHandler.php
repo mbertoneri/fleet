@@ -10,12 +10,9 @@ use Fulll\Infra\Repository\VehicleRepository;
 
 final readonly class FindVehicleQueryHandler implements QueryHandlerInterface
 {
-
     public function __construct(
         private ServiceCollectionInterface $serviceCollection
-    )
-    {
-    }
+    ) {}
 
     /**
      * @param FindVehicleQuery $command

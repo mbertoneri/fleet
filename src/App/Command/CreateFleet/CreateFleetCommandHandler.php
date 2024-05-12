@@ -10,10 +10,9 @@ use Fulll\Domain\Model\Fleet;
 
 final readonly class CreateFleetCommandHandler implements CommandHandlerInterface
 {
-
     public function __construct(
         private ServiceCollectionInterface $serviceCollection
-    ){}
+    ) {}
 
     /**
      * @param CreateFleetCommand $command

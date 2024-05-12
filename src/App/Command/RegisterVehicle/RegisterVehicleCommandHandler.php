@@ -14,10 +14,7 @@ use Fulll\Domain\Model\Vehicle;
 
 final readonly class RegisterVehicleCommandHandler implements CommandHandlerInterface
 {
-
-    public function __construct(private ServiceCollectionInterface $serviceCollection)
-    {
-    }
+    public function __construct(private ServiceCollectionInterface $serviceCollection) {}
 
     /**
      * @param RegisterVehicleCommand $command
@@ -28,7 +25,7 @@ final readonly class RegisterVehicleCommandHandler implements CommandHandlerInte
         $fleetRepository = $this->serviceCollection->get(FleetRepositoryInterface::class);
         $fleet = $fleetRepository->findByUserId($command->fleetUserId);
 
-        if (null === $fleet){
+        if (null === $fleet) {
             throw new FleetNotFoundException($command->fleetUserId);
         }
 
@@ -40,7 +37,7 @@ final readonly class RegisterVehicleCommandHandler implements CommandHandlerInte
             throw new VehicleNotFoundException($command->vehiclePlateNumber);
         }
 
-        if ($fleet->isVehicleRegistered($vehicle)){
+        if ($fleet->isVehicleRegistered($vehicle)) {
             throw new VehicleAlreadyRegisteredException($vehicle);
         }
 

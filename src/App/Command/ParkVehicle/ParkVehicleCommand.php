@@ -10,5 +10,5 @@ class ParkVehicleCommand implements CommandInterface
         public string $vehiclePlateNumber,
         public float  $longitude,
         public float  $latitude,
-    ){}
+    ) {}
 }

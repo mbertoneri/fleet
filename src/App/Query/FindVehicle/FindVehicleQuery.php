@@ -6,6 +6,5 @@ use Fulll\App\Shared\Query\QueryInterface;
 
 class FindVehicleQuery implements QueryInterface
 {
-    public function __construct(public string $plateNumber)
-    {}
+    public function __construct(public string $plateNumber) {}
 }

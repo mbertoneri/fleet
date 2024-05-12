@@ -34,7 +34,7 @@ final class SqliteManager implements SqlManagerInterface
 
     public function insertStmt(string $sql, array $params = []): void
     {
-        $this->executeStmt($sql,$params);
+        $this->executeStmt($sql, $params);
     }
 
     public function fetchStmt(string $sql, array $params = []): array

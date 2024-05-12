@@ -2,7 +2,4 @@
 
 namespace Fulll\App\Shared\Query;
 
-interface QueryInterface
-{
-
-}
+interface QueryInterface {}

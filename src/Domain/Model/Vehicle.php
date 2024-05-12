@@ -11,9 +11,7 @@ class Vehicle
         private readonly string          $plateNumber,
         private readonly VehicleTypeEnum $type,
         private ?Location                $location = null,
-    )
-    {
-    }
+    ) {}
 
     public static function create(string $plateNumber, VehicleTypeEnum $type, ?string $id = null): static
     {
@@ -33,7 +31,8 @@ class Vehicle
         return new self(
             id: $id ?? uniqid('veh_', true),
             plateNumber: $registrationNumber,
-            type: VehicleTypeEnum::CAR);
+            type: VehicleTypeEnum::CAR
+        );
     }
 
     public static function createMotorcycle(string $registrationNumber, ?string $id = null): static
@@ -41,7 +40,8 @@ class Vehicle
         return new self(
             id: $id ?? uniqid('veh_', true),
             plateNumber: $registrationNumber,
-            type: VehicleTypeEnum::MOTORCYCLE);
+            type: VehicleTypeEnum::MOTORCYCLE
+        );
     }
 
     public static function createTruck(string $registrationNumber, ?string $id = null): static
@@ -49,7 +49,8 @@ class Vehicle
         return new self(
             id: $id ?? uniqid('veh_', true),
             plateNumber: $registrationNumber,
-            type: VehicleTypeEnum::TRUCK);
+            type: VehicleTypeEnum::TRUCK
+        );
     }
 
     public static function createUnknown(string $registrationNumber, ?string $id = null): static
@@ -57,7 +58,8 @@ class Vehicle
         return new self(
             id: $id ?? uniqid('veh_', true),
             plateNumber: $registrationNumber,
-            type: VehicleTypeEnum::OTHER);
+            type: VehicleTypeEnum::OTHER
+        );
     }
 
     public function getId(): string

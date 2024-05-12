@@ -10,6 +10,5 @@ final readonly class CreateVehicleCommand implements CommandInterface
     public function __construct(
         public string          $registrationNumber,
         public VehicleTypeEnum $vehicleType = VehicleTypeEnum::CAR,
-    )
-    {}
+    ) {}
 }

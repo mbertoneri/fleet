@@ -13,10 +13,7 @@ use Fulll\Domain\Model\Vehicle;
 
 class ParkVehicleCommandHandler implements CommandHandlerInterface
 {
-
-    public function __construct(private ServiceCollectionInterface $serviceCollection)
-    {
-    }
+    public function __construct(private ServiceCollectionInterface $serviceCollection) {}
 
     /**
      * @param ParkVehicleCommand $command
@@ -31,14 +28,14 @@ class ParkVehicleCommandHandler implements CommandHandlerInterface
             throw new VehicleNotFoundException($command->vehiclePlateNumber);
         }
 
-//        print_r('****** ParkVehicleCommandHandler');
-//        print_r($vehicle);
-//        print_r($command);
+        //        print_r('****** ParkVehicleCommandHandler');
+        //        print_r($vehicle);
+        //        print_r($command);
 
         if ($command->longitude === $vehicle->getLocation()?->getLongitude()
             && $command->latitude === $vehicle->getLocation()?->getLatitude()
-        ){
-            throw new AlreadyParkedException($command->vehiclePlateNumber,$command->latitude,$command->longitude);
+        ) {
+            throw new AlreadyParkedException($command->vehiclePlateNumber, $command->latitude, $command->longitude);
         }
 
         $vehicle->setLocation(new Location(latitude: $command->latitude, longitude: $command->longitude));

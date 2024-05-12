@@ -13,12 +13,9 @@ use Fulll\Domain\Model\Vehicle;
 
 final readonly class CreateVehicleCommandHandler implements CommandHandlerInterface
 {
-
     public function __construct(
         private ServiceCollectionInterface $serviceCollection
-    )
-    {
-    }
+    ) {}
 
     /**
      * @param CreateVehicleCommand $command
@@ -31,7 +28,7 @@ final readonly class CreateVehicleCommandHandler implements CommandHandlerInterf
             throw new ServiceNotFoundException('Vehicle repository not found');
         }
 
-        $vehicle = Vehicle::create($command->registrationNumber,$command->vehicleType);
+        $vehicle = Vehicle::create($command->registrationNumber, $command->vehicleType);
 
         $vehicleRepository->save($vehicle);
         return $vehicle;

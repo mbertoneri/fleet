@@ -10,7 +10,7 @@ final class FleetNotFoundException extends \Exception
     public function __construct(string $id)
     {
         parent::__construct(
-            message: sprintf('Fleet with id %s was not found ',$id)
+            message: sprintf('Fleet with id %s was not found ', $id)
         );
     }
 }

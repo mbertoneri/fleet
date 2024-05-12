@@ -45,7 +45,7 @@ final class FleetClient extends Command
             ->addOption('userId', null, InputOption::VALUE_OPTIONAL, 'fleet user id')
             ->addArgument('register-vehicle', InputArgument::OPTIONAL, 'Register a new vehicle')
             ->addOption('plate-number', null, InputOption::VALUE_OPTIONAL, 'Vehicle plate number')
-            ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Vehicle type',VehicleTypeEnum::CAR->value)
+            ->addOption('type', null, InputOption::VALUE_OPTIONAL, 'Vehicle type', VehicleTypeEnum::CAR->value)
             ->addArgument('localize-vehicle', InputArgument::OPTIONAL, 'Localize a vehicle')
             ->addOption('lat', null, InputOption::VALUE_OPTIONAL, 'Latitude')
             ->addOption('lng', null, InputOption::VALUE_OPTIONAL, 'Longitude');
@@ -73,7 +73,7 @@ final class FleetClient extends Command
                 $this->createVehicle($input, $io);
                 break;
             case self::LOCALIZE_VEHICLE:
-                $this->localizeVehicle($input,$io);
+                $this->localizeVehicle($input, $io);
                 break;
             default:
                 $io->error('No arguments provided');
@@ -125,7 +125,7 @@ final class FleetClient extends Command
             $vehicle = $queryBus->ask(new FindVehicleQuery($plateNumber));
 
             if (null === $vehicle) {
-                $vehicle = $commandBus->execute(new CreateVehicleCommand($plateNumber,VehicleTypeEnum::tryFrom($type) ?? VehicleTypeEnum::CAR));
+                $vehicle = $commandBus->execute(new CreateVehicleCommand($plateNumber, VehicleTypeEnum::tryFrom($type) ?? VehicleTypeEnum::CAR));
             }
 
             $commandBus->execute(new RegisterVehicleCommand($fleet->getUserId(), $vehicle->getPlateNumber()));
@@ -158,12 +158,12 @@ final class FleetClient extends Command
             }
 
             $commandBus = $this->serviceCollection->getCommandBus();
-            $commandBus->execute(new ParkVehicleCommand(vehiclePlateNumber: $vehicle->getPlateNumber(),longitude:  $longitude,latitude:  $latitude));
+            $commandBus->execute(new ParkVehicleCommand(vehiclePlateNumber: $vehicle->getPlateNumber(), longitude:  $longitude, latitude:  $latitude));
 
             $io->success('Vehicle with plate number ' . $plateNumber . ' was successfully parked at [lat=' . $latitude . ',lng=' . $longitude . '] ');
 
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             $io->error('An error occurred while localizing vehicle: ' . $exception->getMessage());
         }
 

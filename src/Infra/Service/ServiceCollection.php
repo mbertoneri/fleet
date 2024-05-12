@@ -26,8 +26,7 @@ final class ServiceCollection implements ServiceCollectionInterface
 
     private function __construct(
         private array $services
-    ){
-    }
+    ) {}
 
     public static function create(): static
     {
@@ -43,14 +42,14 @@ final class ServiceCollection implements ServiceCollectionInterface
         $services->set(VehicleRepositoryInterface::class, new VehicleRepository($services));
 
         //register bus
-        $services->set(CommandBusInterface::class,new CommandBus($services));
-        $services->set(QueryBusInterface::class,new QueryBus($services));
+        $services->set(CommandBusInterface::class, new CommandBus($services));
+        $services->set(QueryBusInterface::class, new QueryBus($services));
 
         //register commands
-        $services->set(RegisterVehicleCommandHandler::class,new RegisterVehicleCommandHandler($services));
-        $services->set(CreateFleetCommandHandler::class,new CreateFleetCommandHandler($services));
-        $services->set(CreateVehicleCommandHandler::class,new CreateVehicleCommandHandler($services));
-        $services->set(ParkVehicleCommandHandler::class,new ParkVehicleCommandHandler($services));
+        $services->set(RegisterVehicleCommandHandler::class, new RegisterVehicleCommandHandler($services));
+        $services->set(CreateFleetCommandHandler::class, new CreateFleetCommandHandler($services));
+        $services->set(CreateVehicleCommandHandler::class, new CreateVehicleCommandHandler($services));
+        $services->set(ParkVehicleCommandHandler::class, new ParkVehicleCommandHandler($services));
 
         //register queries
         $services->set(FindFleetQueryHandler::class, new FindFleetQueryHandler($services));
@@ -62,13 +61,13 @@ final class ServiceCollection implements ServiceCollectionInterface
 
     public function set(string $serviceId, object $value): static
     {
-       $this->services[$serviceId] = $value ;
-       return $this;
+        $this->services[$serviceId] = $value ;
+        return $this;
     }
 
     public function get(string $serviceId): ?object
     {
-       return $this->services[$serviceId] ?? null;
+        return $this->services[$serviceId] ?? null;
     }
 
     public function getCommandBus(): CommandBusInterface

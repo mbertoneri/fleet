@@ -10,13 +10,11 @@ use Fulll\Infra\Sql\SqlManagerInterface;
 
 final class FleetRepository implements FleetRepositoryInterface
 {
-
     private SqlManagerInterface $manager;
 
     public function __construct(
-       private ServiceCollectionInterface $serviceCollection,
-    )
-    {
+        private ServiceCollectionInterface $serviceCollection,
+    ) {
         $this->manager = $this->serviceCollection->getSqlManager();
     }
 
@@ -31,7 +29,8 @@ final class FleetRepository implements FleetRepositoryInterface
         foreach ($fleet->getAll() as $vehicle) {
             $query = "INSERT OR IGNORE INTO fleet_vehicle (fleet_id, vehicle_id) VALUES (:fleetId, :vehicleId)";
             $this->manager->insertStmt(
-                $query, [
+                $query,
+                [
                     'fleetId' => $fleet->getId(),
                     'vehicleId' => $vehicle->getId(),
                 ]

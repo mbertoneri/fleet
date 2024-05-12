@@ -18,7 +18,6 @@ use Fulll\Tests\Integration\ResetTrait;
 
 final class RegisterVehicleContext implements Context
 {
-
     use ResetTrait;
 
     private ?Fleet $fleet = null;
@@ -127,7 +126,7 @@ final class RegisterVehicleContext implements Context
     /**
      * @Given the fleet of another user
      */
-    public function theFleetOfAnotherUser() : void
+    public function theFleetOfAnotherUser(): void
     {
         $commandBus = $this->services->getCommandBus();
         $createFleetCommand = new CreateFleetCommand('fleetTwo');
@@ -140,7 +139,7 @@ final class RegisterVehicleContext implements Context
     /**
      * @Given this vehicle has been registered into the other user's fleet
      */
-    public function thisVehicleHasBeenRegisteredIntoTheOtherUsersFleet() : void
+    public function thisVehicleHasBeenRegisteredIntoTheOtherUsersFleet(): void
     {
         $commandBus = $this->services->getCommandBus();
         $registerCommand = new RegisterVehicleCommand($this->anotherFleet->getUserId(), $this->vehicle->getPlateNumber());
@@ -150,7 +149,7 @@ final class RegisterVehicleContext implements Context
         $fleetRepository = $this->services->get(FleetRepositoryInterface::class);
         $this->anotherFleet = $fleetRepository->findByUserId('fleetTwo');
 
-        if (!$this->anotherFleet->isVehicleRegistered($this->vehicle)){
+        if (!$this->anotherFleet->isVehicleRegistered($this->vehicle)) {
             throw new \RuntimeException('Vehicle should be registered in another fleet');
         }
     }

@@ -11,10 +11,9 @@ use Fulll\Infra\Repository\FleetRepository;
 
 final readonly class FindFleetQueryHandler implements QueryHandlerInterface
 {
-
     public function __construct(
         private ServiceCollectionInterface $serviceCollection
-    ){}
+    ) {}
 
     /**
      * @param FindFleetQuery $command

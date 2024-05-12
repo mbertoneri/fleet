@@ -2,7 +2,4 @@
 
 namespace Fulll\App\Shared\Command;
 
-interface CommandInterface
-{
-
-}
+interface CommandInterface {}

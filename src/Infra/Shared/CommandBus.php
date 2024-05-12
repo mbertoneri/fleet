@@ -9,10 +9,7 @@ use Fulll\App\Shared\Service\ServiceCollectionInterface;
 
 final readonly class CommandBus implements CommandBusInterface
 {
-
-    public function __construct(private ServiceCollectionInterface $serviceCollection)
-    {
-    }
+    public function __construct(private ServiceCollectionInterface $serviceCollection) {}
 
     public function execute(CommandInterface $command): mixed
     {
