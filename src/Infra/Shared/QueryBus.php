@@ -4,6 +4,7 @@ namespace Fulll\Infra\Shared;
 
 use Fulll\App\Exception\ServiceNotFoundException;
 use Fulll\App\Shared\Query\QueryBusInterface;
+use Fulll\App\Shared\Query\QueryHandlerInterface;
 use Fulll\App\Shared\Query\QueryInterface;
 use Fulll\App\Shared\Service\ServiceCollectionInterface;
 
@@ -21,6 +22,7 @@ final class QueryBus implements QueryBusInterface
             throw new ServiceNotFoundException($serviceId);
         }
 
+        /** @var QueryHandlerInterface $handler */
         return ($handler)($query);
     }
 }

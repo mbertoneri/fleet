@@ -11,6 +11,7 @@ use Fulll\App\Query\FindVehicle\FindVehicleQuery;
 use Fulll\Domain\Enum\VehicleTypeEnum;
 use Fulll\Domain\Exception\VehicleNotFoundException;
 use Fulll\Domain\Model\Fleet;
+use Fulll\Domain\Model\Vehicle;
 use Fulll\Infra\Service\ServiceCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -57,9 +58,10 @@ final class FleetClient extends Command
 
         $io->writeln('Fleet client');
 
+        /** @var string $argument */
         $argument = $input->getArgument('create');
 
-        if (empty($argument)) {
+        if ($this->isEmpty($argument)) {
             $io->error('No arguments was provided');
         }
 
@@ -87,10 +89,14 @@ final class FleetClient extends Command
     private function createFleet(InputInterface $input, SymfonyStyle $io): void
     {
         //php bin/console fleet:client create --userId fleet-one
-        $userId = $input->getOption('userId');
-        if (empty($userId)) {
+
+        if ($this->isEmpty($input->getOption('userId'))) {
             $io->error('Can\t create a fleet without userId');
+            return;
         }
+
+        /** @var string $userId */
+        $userId = $input->getOption('userId');
 
         try {
             $io->writeln('creating fleet');
@@ -107,13 +113,17 @@ final class FleetClient extends Command
     {
         //php bin/console fleet:client register-vehicle --userId fleet-one --plate-number AX-3K-OK --type motorcycle
 
-        $userId = $input->getOption('userId');
-        $plateNumber = $input->getOption('plate-number');
-        $type = $input->getOption('type');
-
-        if (empty($plateNumber) || empty($userId) || empty($type)) {
+        if ($this->isEmpty($input->getOption('userId')) || $this->isEmpty($input->getOption('plate-number')) || $this->isEmpty($input->getOption('type'))) {
             $io->error('Can\t create a vehicle without fleet user id or vehicle plate number or type');
+            return;
         }
+
+        /** @var string $userId */
+        $userId = $input->getOption('userId');
+        /** @var string $plateNumber */
+        $plateNumber = $input->getOption('plate-number');
+        /** @var string $type */
+        $type = $input->getOption('type');
 
         try {
 
@@ -128,9 +138,10 @@ final class FleetClient extends Command
                 $vehicle = $commandBus->execute(new CreateVehicleCommand($plateNumber, VehicleTypeEnum::tryFrom($type) ?? VehicleTypeEnum::CAR));
             }
 
+            /** @var Vehicle $vehicle */
             $commandBus->execute(new RegisterVehicleCommand($fleet->getUserId(), $vehicle->getPlateNumber()));
 
-            $io->success('Fleet with plate number ' . $plateNumber . ' was successfully registered');
+            $io->success('Vehicle with plate number ' . $plateNumber . ' was successfully registered');
 
         } catch (\Exception $exception) {
             $io->error('An error occurred while creating vehicle: ' . $exception->getMessage());
@@ -141,13 +152,18 @@ final class FleetClient extends Command
     private function localizeVehicle(InputInterface $input, SymfonyStyle $io): void
     {
         //php bin/console fleet:client localize-vehicle --plate-number AX-3K-OK --lat 3.45 --lng 18.456
-        $plateNumber = $input->getOption('plate-number');
-        $latitude = $input->getOption('lat');
-        $longitude = $input->getOption('lng');
 
-        if (empty($plateNumber) || empty($latitude) || empty($longitude)) {
+        if ($this->isEmpty($input->getOption('plate-number')) || $this->isEmpty($input->getOption('lat')) || $this->isEmpty($input->getOption('lng'))) {
             $io->error("Can't localize vehicle without plate number or lat and lng");
+            return;
         }
+
+        /** @var string $plateNumber */
+        $plateNumber = $input->getOption('plate-number');
+        /** @var string $latitude */
+        $latitude = $input->getOption('lat');
+        /** @var string $longitude */
+        $longitude = $input->getOption('lng');
 
         try {
             $queryBus = $this->serviceCollection->getQueryBus();
@@ -158,7 +174,8 @@ final class FleetClient extends Command
             }
 
             $commandBus = $this->serviceCollection->getCommandBus();
-            $commandBus->execute(new ParkVehicleCommand(vehiclePlateNumber: $vehicle->getPlateNumber(), longitude:  $longitude, latitude:  $latitude));
+            /** @var Vehicle $vehicle */
+            $commandBus->execute(new ParkVehicleCommand(vehiclePlateNumber: $vehicle->getPlateNumber(), longitude:  (float) $longitude, latitude:  (float) $latitude));
 
             $io->success('Vehicle with plate number ' . $plateNumber . ' was successfully parked at [lat=' . $latitude . ',lng=' . $longitude . '] ');
 
@@ -167,6 +184,17 @@ final class FleetClient extends Command
             $io->error('An error occurred while localizing vehicle: ' . $exception->getMessage());
         }
 
+    }
+
+    private function isEmpty(mixed $value): bool
+    {
+        if ($value === null) {
+            return true;
+        }
+        if (is_string($value) && $value === '') {
+            return true;
+        }
+        return false;
     }
 
 }

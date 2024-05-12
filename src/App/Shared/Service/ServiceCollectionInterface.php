@@ -8,7 +8,7 @@ use Fulll\Infra\Sql\SqlManagerInterface;
 
 interface ServiceCollectionInterface
 {
-    public function set(string $serviceId, object $value);
+    public function set(string $serviceId, object $value): static;
     public function get(string $serviceId): ?object;
 
     public function getCommandBus(): CommandBusInterface;

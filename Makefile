@@ -5,9 +5,6 @@ behat:
 
 ## Quality assurance
 
-tools:
-	mkdir $@
-
 #PHP-CS-FIXER
 tools/php-cs-fixer/vendor: composer.lock
 	mkdir -p tools/php-cs-fixer
@@ -30,4 +27,14 @@ phpmd: tools/phpmd/vendor
 apply-phpmd:
 	$(MAKE) phpmd arguments="--cache --cache-file tools/phpmd/.phpmd.result-cache.php src,tests text .phpmd.xml"
 
-pre-commit: apply-phpmd apply-php-cs
+#PHPSTAN
+tools/phpstan/vendor: composer.lock
+	composer --working-dir=tools/phpstan install
+
+phpstan: tools/phpstan/vendor
+	php tools/phpstan/vendor/bin/phpstan $(arguments)
+
+apply-phpstan:
+	$(MAKE) phpstan arguments="analyse --memory-limit=-1 -c .phpstan.neon"
+
+pre-commit: apply-phpmd apply-php-cs apply-phpstan

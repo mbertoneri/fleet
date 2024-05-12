@@ -6,6 +6,7 @@ use Fulll\App\Shared\Service\ServiceCollectionInterface;
 use Fulll\Domain\Domain\FleetRepositoryInterface;
 use Fulll\Domain\Domain\VehicleRepositoryInterface;
 use Fulll\Domain\Model\Fleet;
+use Fulll\Domain\Model\Vehicle;
 use Fulll\Infra\Sql\SqlManagerInterface;
 
 final class FleetRepository implements FleetRepositoryInterface
@@ -49,7 +50,10 @@ final class FleetRepository implements FleetRepositoryInterface
 
         $fleet = Fleet::create(userId: $result[0]['user_id'], id: $result[0]['id']);
 
-        $vehicles = $this->serviceCollection->get(VehicleRepositoryInterface::class)->findByFleetId($fleet->getId());
+
+        /** @var VehicleRepositoryInterface $vehicleRepository */
+        $vehicleRepository = $this->serviceCollection->get(VehicleRepositoryInterface::class);
+        $vehicles = $vehicleRepository->findByFleetId($fleet->getId());
 
         foreach ($vehicles as $vehicle) {
             $fleet->registerVehicle($vehicle);
@@ -58,8 +62,4 @@ final class FleetRepository implements FleetRepositoryInterface
         return $fleet;
     }
 
-    public function count(): int
-    {
-        return \count($this->fleets);
-    }
 }

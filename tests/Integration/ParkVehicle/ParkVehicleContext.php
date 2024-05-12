@@ -10,6 +10,7 @@ use Fulll\App\Command\ParkVehicle\ParkVehicleCommand;
 use Fulll\App\Command\RegisterVehicle\RegisterVehicleCommand;
 use Fulll\Domain\Domain\FleetRepositoryInterface;
 use Fulll\Domain\Domain\VehicleRepositoryInterface;
+use Fulll\Domain\Enum\VehicleTypeEnum;
 use Fulll\Domain\Exception\AlreadyParkedException;
 use Fulll\Domain\Model\Fleet;
 use Fulll\Domain\Model\Location;
@@ -46,7 +47,9 @@ final class ParkVehicleContext implements Context
     {
         $commandBus = $this->services->getCommandBus();
         $createFleetCommand = new CreateFleetCommand('fleetOne');
-        $this->fleet = $commandBus->execute($createFleetCommand);
+        /** @var Fleet $fleet */
+        $fleet = $commandBus->execute($createFleetCommand);
+        $this->fleet = $fleet;
         if (null === $this->fleet) {
             throw new \RuntimeException('Fleet was not created');
         }
@@ -59,7 +62,9 @@ final class ParkVehicleContext implements Context
     {
         $commandBus = $this->services->getCommandBus();
         $createVehicleCommand = new CreateVehicleCommand(registrationNumber: 'vehicleOne');
-        $this->vehicle = $commandBus->execute($createVehicleCommand);
+        /** @var Vehicle $vehicle */
+        $vehicle = $commandBus->execute($createVehicleCommand);
+        $this->vehicle = $vehicle;
         if (null === $this->vehicle) {
             throw new \RuntimeException('Fleet was not created');
         }
@@ -70,6 +75,10 @@ final class ParkVehicleContext implements Context
      */
     public function iHaveRegisteredThisVehicleIntoMyFleet(): void
     {
+        if (null === $this->vehicle || null === $this->fleet) {
+            throw new \RuntimeException('Fleet or Vehicle should not be null');
+        }
+
         $commandBus = $this->services->getCommandBus();
         $registerCommand = new RegisterVehicleCommand($this->fleet->getUserId(), $this->vehicle->getPlateNumber());
         $commandBus->execute($registerCommand);
@@ -77,6 +86,10 @@ final class ParkVehicleContext implements Context
         /** @var FleetRepositoryInterface $fleetRepository */
         $fleetRepository = $this->services->get(FleetRepositoryInterface::class);
         $this->fleet = $fleetRepository->findByUserId('fleetOne');
+
+        if (null === $this->fleet) {
+            throw new \RuntimeException('Fleet was not found');
+        }
 
         if (!$this->fleet->isVehicleRegistered($this->vehicle)) {
             throw new \RuntimeException('Vehicle was not registered');
@@ -96,9 +109,13 @@ final class ParkVehicleContext implements Context
      */
     public function iParkMyVehicleAtThisLocation(): void
     {
+        if (null === $this->vehicle || null === $this->location) {
+            throw new \RuntimeException('Vehicle or location was not found');
+        }
+
         $commandBus = $this->services->getCommandBus();
         $parkVehicleCommand = new ParkVehicleCommand(
-            vehiclePlateNumber: $this->vehicle?->getPlateNumber(),
+            vehiclePlateNumber: $this->vehicle->getPlateNumber(),
             longitude: $this->location->getLongitude(),
             latitude: $this->location->getLatitude()
         );
@@ -114,8 +131,12 @@ final class ParkVehicleContext implements Context
         $vehicleRepository = $this->services->get(VehicleRepositoryInterface::class);
         $this->vehicle = $vehicleRepository->findByRegistrationPlate('vehicleOne');
 
+        if (null === $this->vehicle || null === $this->location) {
+            throw new \RuntimeException('Vehicle or location was not found');
+        }
+
         if ($this->vehicle->getLocation()?->getLongitude() !== $this->location->getLongitude() ||
-            $this->vehicle->getLocation()?->getLatitude() !== $this->location->getLatitude()
+            $this->vehicle->getLocation()->getLatitude() !== $this->location->getLatitude()
         ) {
             throw new \RuntimeException('Vehicle is parked at the wrong location');
         }
@@ -126,7 +147,7 @@ final class ParkVehicleContext implements Context
      */
     public function myVehicleHasBeenParkedIntoThisLocation(): void
     {
-        $this->vehicle = Vehicle::createTruck('At-Ru-cK');
+        $this->vehicle = Vehicle::create('At-Ru-cK', VehicleTypeEnum::TRUCK);
         $this->vehicle->setLocation($this->location);
 
         /** @var VehicleRepositoryInterface $vehicleRepository */
@@ -139,10 +160,14 @@ final class ParkVehicleContext implements Context
      */
     public function iTryToParkMyVehicleAtThisLocation(): void
     {
+        if (null === $this->vehicle || null === $this->location) {
+            throw new \RuntimeException('Vehicle or location was not found');
+        }
+
         try {
             $commandBus = $this->services->getCommandBus();
             $parkVehicleCommand = new ParkVehicleCommand(
-                vehiclePlateNumber: $this->vehicle?->getPlateNumber(),
+                vehiclePlateNumber: $this->vehicle->getPlateNumber(),
                 longitude: $this->location->getLongitude(),
                 latitude: $this->location->getLatitude()
             );

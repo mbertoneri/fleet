@@ -14,7 +14,7 @@ final class Fleet
         $this->vehicles = [];
     }
 
-    public static function create(string $userId, ?string $id = null): static
+    public static function create(string $userId, ?string $id = null): Fleet
     {
         return new self(
             id: $id ?? uniqid('fleet_id', true),

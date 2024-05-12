@@ -18,7 +18,7 @@ final readonly class FindFleetQueryHandler implements QueryHandlerInterface
     /**
      * @param FindFleetQuery $command
      */
-    public function __invoke(QueryInterface $command): Fleet
+    public function __invoke(QueryInterface $command): ?Fleet
     {
         /** @var FleetRepository $repo */
         $repo = $this->serviceCollection->get(FleetRepositoryInterface::class);

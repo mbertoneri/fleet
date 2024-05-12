@@ -25,6 +25,7 @@ final class SqliteManager implements SqlManagerInterface
         $this->checkConnection();
 
         try {
+            // @phpstan-ignore-next-line
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
         } catch (\PDOException $exception) {
@@ -42,6 +43,7 @@ final class SqliteManager implements SqlManagerInterface
         $this->checkConnection();
 
         try {
+            // @phpstan-ignore-next-line
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);

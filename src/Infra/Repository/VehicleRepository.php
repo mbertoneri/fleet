@@ -7,7 +7,6 @@ use Fulll\Domain\Domain\VehicleRepositoryInterface;
 use Fulll\Domain\Enum\VehicleTypeEnum;
 use Fulll\Domain\Model\Location;
 use Fulll\Domain\Model\Vehicle;
-use Fulll\Infra\Exception\SqlException;
 use Fulll\Infra\Sql\SqlManagerInterface;
 
 final class VehicleRepository implements VehicleRepositoryInterface
@@ -41,8 +40,13 @@ final class VehicleRepository implements VehicleRepositoryInterface
             return null;
         }
 
-        $vehicle = Vehicle::create(plateNumber: $result[0]['plate_number'], type: VehicleTypeEnum::tryFrom($result[0]['type']), id: $result[0]['id']);
-        if (!empty($result[0]['latitude']) && !empty($result[0]['longitude'])) {
+        $vehicle = Vehicle::create(
+            plateNumber: $result[0]['plate_number'],
+            type: VehicleTypeEnum::tryFrom($result[0]['type']) ?? throw new \InvalidArgumentException('Vehicle type is invalid'),
+            id: $result[0]['id']
+        );
+
+        if (null !== ($result[0]['latitude']) && (null !== $result[0]['longitude'])) {
             $vehicle->setLocation(new Location(latitude:$result[0]['latitude'], longitude: $result[0]['longitude']));
         }
         return $vehicle;
@@ -56,9 +60,13 @@ final class VehicleRepository implements VehicleRepositoryInterface
         $results = $this->manager->fetchStmt($query, ['fleetId' => $fleetId]);
 
         foreach ($results as $result) {
-            $vehicle = Vehicle::create(plateNumber: $result['plate_number'], type: VehicleTypeEnum::tryFrom($result['type']), id: $result['id']);
+            $vehicle = Vehicle::create(
+                plateNumber: $result['plate_number'],
+                type: VehicleTypeEnum::tryFrom($result['type']) ?? throw new \InvalidArgumentException('Vehicle type is invalid'),
+                id: $result['id']
+            );
 
-            if (!empty($result['latitude']) && !empty($result['longitude'])) {
+            if (null !== ($result['latitude']) && (null !== $result['longitude'])) {
                 $vehicle->setLocation(new Location(latitude:$result['latitude'], longitude: $result['longitude']));
             }
 
@@ -70,10 +78,6 @@ final class VehicleRepository implements VehicleRepositoryInterface
 
     public function localize(Vehicle $vehicle): void
     {
-        if (null === $vehicle->getId()) {
-            throw new SqlException("Can't update vehicle without id");
-        }
-
         $query = "UPDATE vehicle SET latitude = :latitude, longitude = :longitude WHERE id = :id";
         $this->manager->executeStmt($query, [
             'latitude' => $vehicle->getLocation()?->getLatitude() ?? null,

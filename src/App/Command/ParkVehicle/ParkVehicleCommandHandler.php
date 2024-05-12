@@ -28,12 +28,8 @@ class ParkVehicleCommandHandler implements CommandHandlerInterface
             throw new VehicleNotFoundException($command->vehiclePlateNumber);
         }
 
-        //        print_r('****** ParkVehicleCommandHandler');
-        //        print_r($vehicle);
-        //        print_r($command);
-
         if ($command->longitude === $vehicle->getLocation()?->getLongitude()
-            && $command->latitude === $vehicle->getLocation()?->getLatitude()
+            && $command->latitude === $vehicle->getLocation()->getLatitude()
         ) {
             throw new AlreadyParkedException($command->vehiclePlateNumber, $command->latitude, $command->longitude);
         }
