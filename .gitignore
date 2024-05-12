@@ -2,3 +2,4 @@ vendor
 /tools/*/vendor
 tools/phpmd/.phpmd.result-cache.php
 tools/phpstan/tmp/*
+.phpunit.result.cache

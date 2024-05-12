@@ -3,6 +3,11 @@
 behat:
 	vendor/behat/behat/bin/behat --config=./behat.yml
 
+tu:
+	php vendor/bin/phpunit
+
+tests: tu behat
+
 ## Quality assurance
 
 #PHP-CS-FIXER

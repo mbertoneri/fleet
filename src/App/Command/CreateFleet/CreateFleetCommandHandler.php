@@ -2,6 +2,7 @@
 
 namespace Fulll\App\Command\CreateFleet;
 
+use Fulll\App\Exception\ServiceNotFoundException;
 use Fulll\App\Shared\Command\CommandHandlerInterface;
 use Fulll\App\Shared\Command\CommandInterface;
 use Fulll\App\Shared\Service\ServiceCollectionInterface;
@@ -21,6 +22,10 @@ final readonly class CreateFleetCommandHandler implements CommandHandlerInterfac
     {
         /** @var FleetRepositoryInterface $fleetRepository */
         $fleetRepository = $this->serviceCollection->get(FleetRepositoryInterface::class);
+
+        if (null === $fleetRepository) {
+            throw new ServiceNotFoundException('Fleet repository not found');
+        }
 
         $fleet = Fleet::create($command->userId);
         $fleetRepository->save($fleet);

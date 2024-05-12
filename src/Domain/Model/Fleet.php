@@ -2,7 +2,7 @@
 
 namespace Fulll\Domain\Model;
 
-final class Fleet
+class Fleet
 {
     /** @var array string  */
     private array $vehicles;

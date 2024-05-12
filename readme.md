@@ -1,7 +1,9 @@
 # My Thoughts
 Project is functional.
 Not full done because I'm missing PHPUnit a lot... do not blame me for that (behat is clearly not enough).\
-For Behat tests, I think I could have written some helpers.
+For Behat tests, I think I could have written some helpers.\
+
+finally added some unit tests.
 
 # Requirements
 To run this project you will need a computer with PHP 8.3 and composer installed.
@@ -11,7 +13,9 @@ To install the project, you just have to run `composer install` to get all the d
 
 # Running the tests
 ```
+make tests
 make behat
+make tu
 ```
 
 # Running quality tools:
