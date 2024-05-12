@@ -17,13 +17,13 @@ class Vehicle
 
     public static function create(string $plateNumber, VehicleTypeEnum $type, ?string $id = null): static
     {
-        $ensureId = $id ?? uniqid('veh_', true);
+        $ensureId = $id ?? uniqid('vehicle-', true);
 
         return match (true) {
-            VehicleTypeEnum::CAR === $type => Vehicle::createCar(registrationNumber: $plateNumber, id: $ensureId),
-            VehicleTypeEnum::MOTORCYCLE === $type => Vehicle::createMotorcycle(registrationNumber: $plateNumber, id: $ensureId),
-            VehicleTypeEnum::TRUCK === $type => Vehicle::createTruck(registrationNumber: $plateNumber, id: $ensureId),
-            VehicleTypeEnum::OTHER === $type => Vehicle::createUnknown(registrationNumber: $plateNumber, id: $ensureId),
+            VehicleTypeEnum::CAR === $type => self::createCar(registrationNumber: $plateNumber, id: $ensureId),
+            VehicleTypeEnum::MOTORCYCLE === $type => self::createMotorcycle(registrationNumber: $plateNumber, id: $ensureId),
+            VehicleTypeEnum::TRUCK === $type => self::createTruck(registrationNumber: $plateNumber, id: $ensureId),
+            VehicleTypeEnum::OTHER === $type => self::createUnknown(registrationNumber: $plateNumber, id: $ensureId),
         };
 
     }

@@ -10,6 +10,8 @@ CREATE table vehicle
     id           varchar(255) NOT NULL,
     plate_number varchar(50)  NOT NULL UNIQUE,
     type         varchar(50) NOT NULL,
+    latitude float NULL,
+    longitude float NULL,
     PRIMARY KEY (id)
 );
 

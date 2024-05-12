@@ -2,7 +2,7 @@
 
 namespace Fulll\Domain\Exception;
 
-class AlreadyParkedException extends \Exception
+final class AlreadyParkedException extends \Exception
 {
     public function __construct(string $plateNumber, float $latitude, float $longitude)
     {

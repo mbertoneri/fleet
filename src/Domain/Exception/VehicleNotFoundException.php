@@ -2,7 +2,7 @@
 
 namespace Fulll\Domain\Exception;
 
-class VehicleNotFoundException extends \Exception
+final class VehicleNotFoundException extends \Exception
 {
     public function __construct(string $plateNumber)
     {

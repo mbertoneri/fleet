@@ -5,7 +5,7 @@ namespace Fulll\Domain\Exception;
 use Fulll\Domain\Model\Fleet;
 use Fulll\Domain\Model\Vehicle;
 
-class FleetNotFoundException extends \Exception
+final class FleetNotFoundException extends \Exception
 {
     public function __construct(string $id)
     {

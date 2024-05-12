@@ -7,6 +7,7 @@ use Fulll\App\Shared\Command\CommandInterface;
 use Fulll\App\Shared\Service\ServiceCollectionInterface;
 use Fulll\Domain\Domain\VehicleRepositoryInterface;
 use Fulll\Domain\Exception\AlreadyParkedException;
+use Fulll\Domain\Exception\VehicleNotFoundException;
 use Fulll\Domain\Model\Location;
 use Fulll\Domain\Model\Vehicle;
 
@@ -26,6 +27,13 @@ class ParkVehicleCommandHandler implements CommandHandlerInterface
         $vehicleRepository = $this->serviceCollection->get(VehicleRepositoryInterface::class);
         $vehicle = $vehicleRepository->findByRegistrationPlate($command->vehiclePlateNumber);
 
+        if (null === $vehicle) {
+            throw new VehicleNotFoundException($command->vehiclePlateNumber);
+        }
+
+//        print_r('****** ParkVehicleCommandHandler');
+//        print_r($vehicle);
+//        print_r($command);
 
         if ($command->longitude === $vehicle->getLocation()?->getLongitude()
             && $command->latitude === $vehicle->getLocation()?->getLatitude()
@@ -34,7 +42,7 @@ class ParkVehicleCommandHandler implements CommandHandlerInterface
         }
 
         $vehicle->setLocation(new Location(latitude: $command->latitude, longitude: $command->longitude));
-        $vehicleRepository->save($vehicle);
+        $vehicleRepository->localize($vehicle);
 
         return $vehicle;
     }

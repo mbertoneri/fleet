@@ -3,19 +3,25 @@
 namespace Fulll\Tests\Integration\ParkVehicle;
 
 use Behat\Behat\Context\Context;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Fulll\App\Command\CreateFleet\CreateFleetCommand;
 use Fulll\App\Command\CreateVehicle\CreateVehicleCommand;
 use Fulll\App\Command\ParkVehicle\ParkVehicleCommand;
 use Fulll\App\Command\RegisterVehicle\RegisterVehicleCommand;
+use Fulll\Domain\Domain\FleetRepositoryInterface;
 use Fulll\Domain\Domain\VehicleRepositoryInterface;
 use Fulll\Domain\Exception\AlreadyParkedException;
 use Fulll\Domain\Model\Fleet;
 use Fulll\Domain\Model\Location;
 use Fulll\Domain\Model\Vehicle;
+use Fulll\Infra\Repository\VehicleRepository;
 use Fulll\Infra\Service\ServiceCollection;
+use Fulll\Tests\Integration\ResetTrait;
 
 final class ParkVehicleContext implements Context
 {
+    use ResetTrait;
+
     private ?Fleet $fleet = null;
     private ?Vehicle $vehicle = null;
     private ServiceCollection $services;
@@ -25,6 +31,12 @@ final class ParkVehicleContext implements Context
     public function __construct()
     {
         $this->services = ServiceCollection::create();
+    }
+
+    /** @BeforeScenario */
+    public function before(BeforeScenarioScope $scope): void
+    {
+        $this->reset($this->services->getSqlManager());
     }
 
     /**
@@ -59,10 +71,14 @@ final class ParkVehicleContext implements Context
     public function iHaveRegisteredThisVehicleIntoMyFleet(): void
     {
         $commandBus = $this->services->getCommandBus();
-        $registerCommand = new RegisterVehicleCommand($this->fleet->getId(), $this->vehicle->getPlateNumber());
+        $registerCommand = new RegisterVehicleCommand($this->fleet->getUserId(), $this->vehicle->getPlateNumber());
         $commandBus->execute($registerCommand);
 
-        if (!$this->fleet->isVehicleRegistered($this->vehicle->getPlateNumber())) {
+        /** @var FleetRepositoryInterface $fleetRepository */
+        $fleetRepository = $this->services->get(FleetRepositoryInterface::class);
+        $this->fleet = $fleetRepository->findByUserId('fleetOne');
+
+        if (!$this->fleet->isVehicleRegistered($this->vehicle)) {
             throw new \RuntimeException('Vehicle was not registered');
         }
     }
@@ -94,6 +110,10 @@ final class ParkVehicleContext implements Context
      */
     public function theKnownLocationOfMyVehicleShouldVerifyThisLocation(): void
     {
+        /** @var VehicleRepository $vehicleRepository */
+        $vehicleRepository = $this->services->get(VehicleRepositoryInterface::class);
+        $this->vehicle=$vehicleRepository->findByRegistrationPlate('vehicleOne');
+
         if ($this->vehicle->getLocation()?->getLongitude() !== $this->location->getLongitude() ||
             $this->vehicle->getLocation()?->getLatitude() !== $this->location->getLatitude()
         ) {
@@ -106,7 +126,7 @@ final class ParkVehicleContext implements Context
      */
     public function myVehicleHasBeenParkedIntoThisLocation(): void
     {
-        $this->vehicle = Vehicle::createTruck('AtRucK');
+        $this->vehicle = Vehicle::createTruck('At-Ru-cK');
         $this->vehicle->setLocation($this->location);
 
         /** @var VehicleRepositoryInterface $vehicleRepository */
