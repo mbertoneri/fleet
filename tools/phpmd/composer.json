@@ -1,0 +1,10 @@
+{
+    "require": {
+        "phpmd/phpmd": ">=2.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "CustomPhpMd\\": "src/"
+        }
+    }
+}
